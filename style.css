@@ -110,3 +110,42 @@ button:active {
     background-position: 0 100%;
   }
 } */
+
+.fadeOut {
+  animation: fadeOut 1s ease-in-out;
+}
+
+.fadeIn {
+  animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+  }
+  100% {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+    visibility: visible;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+.block {
+  pointer-events: none;
+  user-select: none;
+ }
+
+.transparent {
+  opacity: 0;
+}
