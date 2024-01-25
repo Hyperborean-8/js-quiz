@@ -75,14 +75,14 @@ function checkAnswer(answer, button) {
   if (button === correctAnswerBtn) {
     console.log(`${answer} is a right answer!`);
 
-    // Подсветить правильный ответ в зелёный цвет
-    button.classList.add("correct");
-
-    // Работа с остальными кнопками
     answerBtnArray.forEach((element) => {
-      // Затмить кнопки не ответы
-      if (element !== button) {
-        element.classList.add("dismiss");
+      switch (element) {
+        case button:
+          element.classList.add("correct");
+          break;
+        default:
+          element.classList.add("dismiss");
+          break;
       }
     });
   } else {
@@ -90,16 +90,17 @@ function checkAnswer(answer, button) {
       `${answer} is not a right answer! The right answer is ${data.questions[index]["correctAnswer"]}`
     );
 
-    // Подсветить неправильный ответ в красный цвет
-    button.classList.add("incorrect");
-
     answerBtnArray.forEach((element) => {
-      // Подсветить правильный ответ в зелёный цвет
-      if (element === correctAnswerBtn) {
-        element.classList.add("correct");
-      } else if (element !== button) {
-        // Затмить каждую кнопку
-        element.classList.add("dismiss");
+      switch (element) {
+        case button:
+          element.classList.add("incorrect");
+          break;
+        case correctAnswerBtn:
+          element.classList.add("correct");
+          break;
+        default:
+          element.classList.add("dismiss");
+          break;
       }
     });
   }
