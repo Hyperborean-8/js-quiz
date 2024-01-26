@@ -1,81 +1,56 @@
-// Константы
 const welcomeContainer = document.getElementById("welcomeContainer");
 const questionContainer = document.getElementById("questionContainer");
 
 const questionLabel = document.getElementById("questionLabel");
 const answersBtnContainer = document.getElementById("answersBtnContainer");
 
-// Переменные
-let jsonLength = null;
-let data = null;
-let index = 0;
-let answerBtnArray = [];
-let correctAnswerBtn;
+let data;
+let answersArray;
+let answersBtnArray = [];
 
-// Переменная пуска, запускается кнопками сложности
+// Запуск
 async function start() {
-  // Поимка данных из JSON
-  data = await fetchJSON();
-
-  // prettier-ignore
-  console.log(`JSON file contains ${data.questions.length} amount of questions.`);
-
-  // Выбор случайного вопроса
-  index = random(0, data.questions.length - 1);
-
-  // prettier-ignore
-  console.log(`Random selected the index ${index} from the maximum index ${data.questions.length-1}.`);
-
-  console.debug(`Current question: ${data.questions[index]["question"]}`);
-  console.debug(`Current answers: ${data.questions[index]["answers"]}`);
-  console.debug(`Correct answer: ${data.questions[index]["correctAnswer"]}`);
+  data = await fetchJSON("./questions/questions_ru.json");
 
   await fadeOut(welcomeContainer, 1);
 
-  console.log("WelcomeContainer fade out is completed.");
-
-  questionLabel.textContent = data.questions[index]["question"];
-
-  // Перемешанный массив со списком ответов
-  let answersArray = shuffle(data.questions[index].answers);
-
-  // Создание кнопок с ответами
-  for (i = 0; i < answersArray.length; i++) {
-    // Создать кнопку
-    answerBtnArray[i] = document.createElement("button");
-    answerBtnArray[i].type = "button";
-
-    // Подписать кнопку
-    answerBtnArray[i].textContent = answersArray[i];
-
-    // Если кнопка является верным ответом, то добавить её в переменную
-    if (answersArray[i] === data.questions[index]["correctAnswer"]) {
-      console.log(`Правильный ответ записан в кнопку ${answerBtnArray[i]}`);
-      correctAnswerBtn = answerBtnArray[i];
-    }
-
-    answerBtnArray[i].classList.add("transparent");
-
-    fadeIn(answerBtnArray[i], 1, i + 1);
-
-    answerBtnArray[i].onclick = function () {
-      checkAnswer(this.textContent, this);
-    };
-
-    answersBtnContainer.appendChild(answerBtnArray[i]);
-  }
+  pickQuestion();
 
   await fadeIn(questionContainer, 1);
 }
 
-function fadeInAllButtons() {}
+function pickQuestion() {
+  let index = random(0, data.questions.length - 1);
+
+  questionLabel.textContent = data.questions[index]["question"];
+
+  answersArray = shuffle(data.questions[index]["answers"]);
+
+  for (i = 0; i < answersArray.length; i++) {
+    answersBtnArray[i] = document.createElement("button");
+    answersBtnArray[i].type = "button";
+    answersBtnArray[i].textContent = answersArray[i];
+    answersBtnArray[i].classList.add("transparent");
+
+    if (answersArray[i] === data.questions[index]["correctAnswer"]) {
+      correctAnswerBtn = answersBtnArray[i];
+    }
+
+    fadeIn(answersBtnArray[i], 1, i + 1);
+
+    answersBtnArray[i].onclick = function () {
+      checkAnswer(this.textContent, this);
+    };
+
+    answersBtnContainer.appendChild(answersBtnArray[i]);
+  }
+}
 
 // При нажатии на кнопку с ответом
 function checkAnswer(answer, button) {
   if (button === correctAnswerBtn) {
-    console.log(`${answer} is a right answer!`);
 
-    answerBtnArray.forEach((element) => {
+    answersBtnArray.forEach((element) => {
       switch (element) {
         case button:
           element.classList.add("correct");
@@ -86,11 +61,8 @@ function checkAnswer(answer, button) {
       }
     });
   } else {
-    console.log(
-      `${answer} is not a right answer! The right answer is ${data.questions[index]["correctAnswer"]}`
-    );
 
-    answerBtnArray.forEach((element) => {
+    answersBtnArray.forEach((element) => {
       switch (element) {
         case button:
           element.classList.add("incorrect");
@@ -106,28 +78,10 @@ function checkAnswer(answer, button) {
   }
 }
 
-async function fadeOut(element, time, delay = 0) {
-  await sleep(delay * 1000);
-  element.classList.add("block");
-  element.classList.add("fadeOut");
-  element.classList.add("transparent");
-  await sleep(time * 1000);
-  element.classList.remove("fadeOut");
-}
-
-async function fadeIn(element, time, delay = 0) {
-  await sleep(delay * 1000);
-  element.classList.add("fadeIn");
-  element.classList.remove("transparent");
-  element.classList.remove("block");
-  await sleep(time * 1000);
-  element.classList.remove("fadeIn");
-}
-
 // Ловит всю информацию из JSON файла
-async function fetchJSON() {
+async function fetchJSON(pathToFile) {
   try {
-    const res = await fetch("./questions/questions_ru.json");
+    const res = await fetch(pathToFile);
     if (!res.ok) {
       throw new Error(`HTTP error! Status: ${res.status}`);
     }
@@ -137,7 +91,7 @@ async function fetchJSON() {
   }
 }
 
-// Функция сна, используется с await (ожидание ответа)
+// Функция сна
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -158,4 +112,21 @@ function shuffle(array) {
   }
 
   return unorderedArray;
+}
+
+// Скрыть элемент
+async function fadeOut(element, time, delay = 0) {
+  await sleep(delay * 1000);
+  element.classList.add("block", "fadeOut", "transparent");
+  await sleep(time * 1000);
+  element.classList.remove("fadeOut");
+}
+
+// Показать элемент
+async function fadeIn(element, time, delay = 0) {
+  await sleep(delay * 1000);
+  element.classList.add("fadeIn");
+  element.classList.remove("transparent", "block");
+  await sleep(time * 1000);
+  element.classList.remove("fadeIn");
 }
