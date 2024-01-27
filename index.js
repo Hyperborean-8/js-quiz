@@ -1,15 +1,21 @@
 const welcomeContainer = document.getElementById("welcomeContainer");
 const questionContainer = document.getElementById("questionContainer");
 
+const finishBtn = document.getElementById("finish");
+const nextBtn = document.getElementById("next");
+
 const questionLabel = document.getElementById("questionLabel");
+const questionCountLabel = document.getElementById("questionCount");
 const answersBtnContainer = document.getElementById("answersBtnContainer");
 
 let data;
 let answersArray;
 let answersBtnArray = [];
+let index;
+let questionCount = 1;
 
-// Запуск
 async function start() {
+  // data holds all the questions, answers, and correct answers
   data = await fetchJSON("./questions/questions_ru.json");
 
   await fadeOut(welcomeContainer, 1);
@@ -20,7 +26,7 @@ async function start() {
 }
 
 function pickQuestion() {
-  let index = random(0, data.questions.length - 1);
+  index = random(0, data.questions.length - 1);
 
   questionLabel.textContent = data.questions[index]["question"];
 
@@ -39,17 +45,16 @@ function pickQuestion() {
     fadeIn(answersBtnArray[i], 1, i + 1);
 
     answersBtnArray[i].onclick = function () {
-      checkAnswer(this.textContent, this);
+      checkAnswer(this);
     };
 
     answersBtnContainer.appendChild(answersBtnArray[i]);
   }
 }
 
-// При нажатии на кнопку с ответом
-function checkAnswer(answer, button) {
+// When user clicks on the answer button
+function checkAnswer(button) {
   if (button === correctAnswerBtn) {
-
     answersBtnArray.forEach((element) => {
       switch (element) {
         case button:
@@ -61,7 +66,6 @@ function checkAnswer(answer, button) {
       }
     });
   } else {
-
     answersBtnArray.forEach((element) => {
       switch (element) {
         case button:
@@ -76,9 +80,54 @@ function checkAnswer(answer, button) {
       }
     });
   }
+
+  delete data.questions.splice(index, 1);
+
+  console.log(data.questions.length);
+
+  if (data.questions.length === 0) {
+    fadeIn(finishBtn, 1, 1);
+  } else {
+    fadeIn(nextBtn, 1, 1);
+  }
 }
 
-// Ловит всю информацию из JSON файла
+// When user clicks on the next button
+async function nextQuestion() {
+  await fadeOut(questionContainer, 1, 0);
+
+  nextBtn.classList.add("transparent", "block");
+
+  questionCount += 1
+  questionCountLabel.textContent = `Вопрос ${questionCount}`
+
+  console.log(answersBtnArray);
+
+  answersBtnArray.forEach((element) => {
+    element.remove();
+  });
+  answersBtnArray = [];
+
+  pickQuestion();
+  await fadeIn(questionContainer, 1);
+}
+
+async function finish() {
+  await fadeOut(questionContainer, 1, 0);
+
+  questionCount = 1;
+  questionCountLabel.textContent = `Вопрос ${questionCount}`
+
+  answersBtnArray.forEach((element) => {
+    element.remove();
+  });
+  answersBtnArray = [];
+
+  await fadeIn(welcomeContainer, 1, 0);
+
+  finishBtn.classList.add("transparent", "block")
+}
+
 async function fetchJSON(pathToFile) {
   try {
     const res = await fetch(pathToFile);
@@ -91,17 +140,14 @@ async function fetchJSON(pathToFile) {
   }
 }
 
-// Функция сна
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-// Функция рандома
 function random(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-// Функция перемешки массива
 function shuffle(array) {
   let unorderedArray = [];
 
@@ -114,7 +160,8 @@ function shuffle(array) {
   return unorderedArray;
 }
 
-// Скрыть элемент
+// Hides the element with CSS animation
+// The time variable is useless because the animation is always 1 second
 async function fadeOut(element, time, delay = 0) {
   await sleep(delay * 1000);
   element.classList.add("block", "fadeOut", "transparent");
@@ -122,7 +169,8 @@ async function fadeOut(element, time, delay = 0) {
   element.classList.remove("fadeOut");
 }
 
-// Показать элемент
+// Shows the element with CSS animation
+// The time variable is useless because the animation is always 1 second
 async function fadeIn(element, time, delay = 0) {
   await sleep(delay * 1000);
   element.classList.add("fadeIn");
@@ -130,3 +178,52 @@ async function fadeIn(element, time, delay = 0) {
   await sleep(time * 1000);
   element.classList.remove("fadeIn");
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

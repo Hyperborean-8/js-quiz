@@ -1,10 +1,10 @@
-/* Стиль html убирает заранее выставленный margin, а также растягивает страницу на всё доступное расстояние */
+/* The html style removes the pre-set margin, and stretches the page to all available space */
 html {
   min-height: 100%;
   margin: 0;
 }
 
-/* Базовые вещи, такой как шрифт и цвет */
+/* Basic stuff like font and color */
 body {
   height: 100vh;
   margin: 0;
@@ -19,7 +19,6 @@ body {
   flex-direction: column;
 }
 
-/* Главный контейнер, в котором будет находиться весь основной контент */
 #mainContainer {
   height: 100vh;
   width: 80dvh;
@@ -32,7 +31,6 @@ body {
   box-shadow: 0px 0px 0px 1px hsl(0, 0%, 14%);
 }
 
-/* Все контейнеры */
 .container {
   display: flex;
   align-items: center;
@@ -44,7 +42,24 @@ body {
   margin-right: 40px;
 }
 
-/* --- Кнопки --- */
+#questionContainer {
+  height: 100dvh;
+  width: 70dvh;
+}
+
+#answersBtnContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 100px;
+}
+
+#questionCount {
+  margin-top: 100px;
+}
+
+/* --- Buttons --- */
 button {
   justify-content: center;
   align-items: center;
@@ -62,17 +77,16 @@ button {
   transition: background-color 0.3s ease;
 }
 
-/* При наведении на кнопку */
 button:hover {
   background-color: hsl(0, 0%, 18%);
 }
 
-/* При нажатии на кнопку */
 button:active {
   background-color: hsl(0, 0%, 28%);
-  transition: none; /* No transition on active */
+  transition: none;
 }
 
+/* --- Correct Answer Button --- */
 button.correct {
   background-color: hsl(118, 100%, 20%);
 
@@ -82,6 +96,7 @@ button.correct {
   user-select: none;
 }
 
+/* --- Incorrect Answer Button --- */
 button.incorrect {
   background-color: hsl(0, 100%, 20%);
 
@@ -101,7 +116,18 @@ button.dismiss {
   user-select: none;
 }
 
-/* --- Задний фон --- */
+#next,
+#finish {
+  margin-top: 120px;
+  align-self: flex-end;
+  margin-left: auto;
+
+  position: absolute;
+  top: 65vh;
+  left: 50vh;
+}
+
+/* --- Background --- */
 .background {
   width: 100%;
   height: 100%;
@@ -127,31 +153,9 @@ button.dismiss {
   );
   background-size: 35rem 35rem;
   background-position: 0rem 0rem;
-
-  /* Анимация, не работает */
-  /* animation: background-animation 5s linear infinite; */
 }
 
-/* Тут должна быть анимация, но я понял, что мой задний фон немного не сходится как я хотел.  */
-/* Или же я просто не понял, как сделать анимацию без разрывания. */
-/* @keyframes background-animation {
-  0% {
-    background-position: 0 0%;
-  }
-  100% {
-    background-position: 0 100%;
-  }
-} */
-
-#answersBtnContainer {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 100px;
-}
-
-/* --- Второстепенные стили --- */
+/* --- Other styles --- */
 .fadeOut {
   animation: fadeOut 1s linear;
 }
@@ -185,7 +189,7 @@ button.dismiss {
 .block {
   pointer-events: none;
   user-select: none;
- }
+}
 
 .transparent {
   opacity: 0;
